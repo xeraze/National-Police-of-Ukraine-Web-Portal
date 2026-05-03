@@ -4,375 +4,327 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Портал ГУНП у Херсонській області</title>
-    
-    <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/d/d0/National_Police_of_Ukraine_emblem.svg">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --sidebar-width: 280px;
-            --bg-color: #0b0f19;
+            --bg-dark: #0b0f19;
             --card-bg: #161c2d;
-            --accent-blue: #1e88e5;
+            --accent: #1e88e5;
             --gold: #ffc107;
-            --text-main: #e2e8f0;
-            --text-dim: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
+            --text-white: #f1f5f9;
+            --text-gray: #94a3b8;
+            --border-style: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        body { background-color: var(--bg-dark); color: var(--text-white); display: flex; min-height: 100vh; overflow-x: hidden; }
 
         aside {
             width: var(--sidebar-width);
             background: #0f172a;
-            border-right: 1px solid var(--border);
+            border-right: var(--border-style);
             display: flex;
             flex-direction: column;
             position: fixed;
             height: 100vh;
-            z-index: 1000;
+            z-index: 100;
         }
 
-        .sidebar-header {
-            padding: 30px 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
+        .logo-area { padding: 30px 20px; text-align: center; border-bottom: var(--border-style); }
+        .logo-area img { width: 80px; margin-bottom: 12px; }
+        .logo-area h2 { font-size: 1rem; color: var(--accent); letter-spacing: 1px; font-weight: 800; }
+
+        nav { flex: 1; padding: 20px 15px; overflow-y: auto; }
+        .nav-link {
+            display: flex; align-items: center; padding: 14px 18px; margin-bottom: 6px;
+            color: var(--text-gray); text-decoration: none; border-radius: 10px;
+            cursor: pointer; transition: all 0.3s ease; font-weight: 600; font-size: 1rem;
         }
+        .nav-link i { width: 30px; font-size: 1.2rem; }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+        .nav-link.active { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3); }
 
-        .sidebar-header img {
-            width: 80px;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 10px rgba(30, 136, 229, 0.3));
+        .footer-brand { padding: 20px; font-size: 0.75rem; color: #475569; border-top: var(--border-style); text-align: center; }
+
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 50px; max-width: 1400px; }
+
+        .hero-section { margin-bottom: 40px; animation: slideIn 0.6s ease-out; }
+        .hero-section h1 { font-size: 3rem; font-weight: 800; margin-bottom: 15px; background: linear-gradient(90deg, #fff, #1e88e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-section p { font-size: 1.2rem; color: var(--text-gray); max-width: 850px; line-height: 1.7; }
+
+        .info-grid { display: flex; gap: 25px; margin-bottom: 40px; flex-wrap: wrap; }
+        .widget {
+            background: var(--card-bg); padding: 25px; border-radius: 15px;
+            border: var(--border-style); flex: 1; min-width: 300px; max-width: 420px;
+            transition: transform 0.3s;
         }
+        .widget:hover { transform: translateY(-5px); }
+        .widget h3 { color: var(--accent); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 12px; }
+        .widget ul { list-style: none; }
+        .widget li { margin-bottom: 12px; padding-left: 20px; position: relative; font-size: 1.15rem; line-height: 1.4; }
+        .widget li::before { content: "•"; color: var(--accent); position: absolute; left: 0; font-size: 1.5rem; top: -2px; }
 
-        .sidebar-header h2 {
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent-blue);
+        .banner-alert {
+            background: rgba(255, 193, 7, 0.07); border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 25px; border-radius: 15px; margin-bottom: 45px; border-left: 6px solid var(--gold);
         }
+        .banner-alert h4 { color: var(--gold); font-size: 1.2rem; margin-bottom: 8px; text-transform: uppercase; }
+        .banner-alert p { font-size: 1.15rem; line-height: 1.5; }
 
-        nav {
-            flex: 1;
-            padding: 20px 10px;
-            overflow-y: auto;
+        .rank-item {
+            background: var(--card-bg); margin-bottom: 15px; border-radius: 12px;
+            padding: 22px 30px; display: flex; align-items: center; gap: 30px;
+            border-left: 5px solid var(--accent); transition: 0.3s;
         }
+        .rank-item:hover { background: #1e293b; padding-left: 35px; }
+        .rank-id { font-weight: 900; font-size: 1.5rem; color: var(--gold); width: 40px; }
+        .rank-content { flex: 1; }
+        .rank-content h4 { font-size: 1.25rem; margin-bottom: 6px; color: #fff; letter-spacing: 0.5px; }
+        .rank-content p { font-size: 1.1rem; color: var(--text-gray); line-height: 1.5; }
+        .rank-time { background: #0f172a; padding: 6px 16px; border-radius: 30px; font-size: 0.95rem; font-weight: 700; color: var(--accent); border: 1px solid rgba(30, 136, 229, 0.2); }
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            margin-bottom: 5px;
-            color: var(--text-dim);
-            text-decoration: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
-        .nav-item i { width: 25px; font-size: 1.1rem; }
-        .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .nav-item.active { background: var(--accent-blue); color: #fff; }
-
-        .sidebar-footer {
-            padding: 20px;
-            font-size: 0.75rem;
-            color: #475569;
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-
-        main {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            padding: 40px;
-            max-width: 1200px;
-        }
-
-        .welcome-screen {
-            text-align: center;
-            padding-top: 50px;
-            animation: fadeIn 0.8s ease;
-        }
-
-        .welcome-screen h1 { font-size: 3rem; margin-bottom: 20px; font-weight: 800; }
-        .welcome-screen p { font-size: 1.2rem; color: var(--text-dim); max-width: 700px; margin: 0 auto 30px; }
-
-        .dept-info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .info-box {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .info-box h3 { color: var(--accent-blue); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .info-box ul { list-style: none; }
-        .info-box ul li { margin-bottom: 10px; padding-left: 15px; position: relative; font-size: 0.95rem; }
-        .info-box ul li::before { content: "•"; color: var(--accent-blue); position: absolute; left: 0; }
-
-        .ranks-section { margin-top: 40px; }
-        .rank-card {
-            background: var(--card-bg);
-            margin-bottom: 15px;
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border-left: 4px solid var(--accent-blue);
-            transition: 0.3s;
-        }
-
-        .rank-card:hover { transform: translateX(10px); background: #1e293b; }
-        .rank-id { font-weight: 800; font-size: 1.2rem; color: var(--gold); min-width: 40px; }
-        .rank-details { flex: 1; }
-        .rank-details h4 { margin-bottom: 5px; font-size: 1.1rem; }
-        .rank-details p { font-size: 0.9rem; color: var(--text-dim); }
-        .rank-time { background: #0f172a; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 1024px) {
-            aside { width: 80px; }
-            aside .nav-item span, aside .sidebar-header h2, aside .sidebar-footer { display: none; }
-            main { margin-left: 80px; }
-            .dept-info-grid { grid-template-columns: 1fr; }
+        @media (max-width: 1100px) {
+            aside { width: 90px; }
+            aside .nav-link span, aside .logo-area h2, aside .footer-brand { display: none; }
+            main { margin-left: 90px; padding: 30px; }
+            .widget { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <aside>
-        <div class="sidebar-header">
+        <div class="logo-area">
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/National_Police_of_Ukraine_emblem.svg" alt="НПУ">
-            <h2>ГУНП Херсон</h2>
+            <h2>ГУНП ХЕРСОН</h2>
         </div>
-        <nav id="sidebar-nav">
-            <div class="nav-item active" onclick="showHome()">
-                <i class="fa-solid fa-house"></i> <span>Головна</span>
+        <nav id="menu-items">
+            <div class="nav-link active" onclick="renderHome()">
+                <i class="fa-solid fa-house-chimney"></i> <span>Головна</span>
             </div>
         </nav>
-        <div class="sidebar-footer">
-            &copy; 2026 <strong>XDEVS</strong><br>Kherson RP
-        </div>
+        <div class="footer-brand">Розроблено для Kherson, Ukraine<br><strong>2026 © XDEVS</strong></div>
     </aside>
 
-    <main id="main-content">
-    </main>
+    <main id="app-view"></main>
 
-    <script>
-        const departments = {
-            "upp": {
-                name: "УПП",
-                fullName: "Управління патрульної поліції",
-                icon: "fa-car",
-                desc: "Обличчя поліції Херсона. Найчисленніший та найактивніший департамент, що першим прибуває на допомогу.",
-                functions: ["Охорона громадського порядку", "Контроль дорожнього руху", "Реагування на виклики 102"],
-                rights: ["Зупинка авто", "Виписка штрафів", "Первинний обшук та затримання"],
-                special: "Патрульні мають право на застосування спецзасобів при переслідуванні порушників.",
-                startRank: 1,
-                customTasks: {
-                    1: "Складання присяги, вивчення Статуту та КУпАП.",
-                    2: "10 перевірок документів, 30 хвилин патрулювання.",
-                    3: "15 перевірок документів, 3 штрафи за ПДР, 1 затримання.",
-                    4: "8 затримань, 5 штрафів, 1 година патрулювання."
-                }
-            },
-            "dvb": {
-                name: "ДВБ",
-                fullName: "Департамент внутрішньої безпеки",
-                icon: "fa-shield-halved",
-                desc: "«Поліція в поліції». Підрозділ, що контролює законність дій самих поліцейських та бореться з корупцією.",
-                functions: ["Службові розслідування", "Виявлення хабарництва", "Контроль дисципліни"],
-                rights: ["Допит будь-якого співробітника", "Перевірка службової документації", "Інкогніто-робота"],
-                special: "Співробітники можуть працювати без форми для прихованого нагляду за складом.",
-                startRank: 4
-            },
-            "dsr": {
-                name: "ДСР",
-                fullName: "Департамент стратегічних розслідувань",
-                icon: "fa-magnifying-glass-chart",
-                desc: "Боротьба з організованою злочинністю, кримінальними авторитетами та незаконними схемами.",
-                functions: ["Протидія ОЗГ", "Боротьба з обігом зброї", "Збір кримінального аналізу"],
-                rights: ["Обшуки бізнесів", "Робота під прикриттям", "Використання цивільних авто"],
-                special: "Оперативники ДСР мають розширений доступ до бази даних криміналітету.",
-                startRank: 4
-            },
-            "su": {
-                name: "СУ",
-                fullName: "Слідче управління",
-                icon: "fa-scale-balanced",
-                desc: "Аналітичний та процесуальний центр. Без слідчого СУ жодна справа не потрапить до суду.",
-                functions: ["Ведення кримінальних справ", "Проведення допитів", "Збір та аналіз доказів"],
-                rights: ["Виписка повісток", "Призначення експертиз", "Керування групою на місці злочину"],
-                special: "Слідчий є головною процесуальною фігурою під час досудового розслідування.",
-                startRank: 4
-            },
-            "kord": {
-                name: "КОРД",
-                fullName: "Корпус оперативно-раптової дії",
-                icon: "fa-person-rifle",
-                desc: "Елітний штурмовий підрозділ. Їх кличуть, коли дипломатія та звичайні патрульні безсилі.",
-                functions: ["Штурм будівель", "Звільнення заручників", "Затримання озброєних злочинців"],
-                rights: ["Використання бронетехніки", "Застосування важкого озброєння", "Оточення районів"],
-                special: "КОРД має право на штурм без попередження при загрозі життю заручників.",
-                startRank: 4
-            },
-            "kp": {
-                name: "КП",
-                fullName: "Кримінальна поліція",
-                icon: "fa-user-secret",
-                desc: "Оперативники, що працюють над розкриттям тяжких та особливо тяжких злочинів «на землі».",
-                functions: ["Пошук злочинців", "Робота з агентурою", "Оперативне стеження"],
-                rights: ["Проведення ОРД", "Опитування свідків", "Затримання підозрюваних"],
-                special: "Співробітники КП часто працюють у цивільному одязі для злиття з натовпом.",
-                startRank: 4
-            },
-            "ppop": {
-                name: "ППОП",
-                fullName: "Поліція особливого призначення",
-                icon: "fa-handcuffs",
-                desc: "Забезпечення публічного порядку під час масових заходів та у зонах зі складною криміногенною ситуацією.",
-                functions: ["Охорона мітингів", "Придушення заворушень", "Посилене патрулювання"],
-                rights: ["Створення периметра", "Застосування спецзасобів розгону", "Масові перевірки"],
-                special: "Завжди працюють групами по 3-5 осіб для максимальної ефективності.",
-                startRank: 4
-            },
-            "po": {
-                name: "ПО",
-                fullName: "Поліція охорони",
-                icon: "fa-building-shield",
-                desc: "Надійний захист об'єктів критичної інфраструктури, банків та VIP-персон.",
-                functions: ["Охорона держоб'єктів", "Інкасація коштів", "Особиста охорона"],
-                rights: ["Захист об'єкта зі зброєю", "Затримання на території", "Блокування в'їздів"],
-                special: "Єдиний підрозділ, що офіційно надає послуги фізичної охорони майна.",
-                startRank: 4
+<script>
+    const rankNames = [
+        "Курсант", "Рядовий поліції", "Капрал поліції", "Сержант поліції", "Старший сержант",
+        "Молодший лейтенант", "Лейтенант", "Старший лейтенант", "Капітан поліції",
+        "Майор поліції", "Підполковник поліції", "Полковник поліції", "Генерал 3-го рангу", "Генерал 2-го рангу", "Генерал 1-го рангу"
+    ];
+
+    const rankTimes = ["Немає", "Немає", "1 місяць", "1.5 місяці", "1.5 міс.", "3 міс.", "4 міс.", "6 міс.", "8 місяців", "8 місяців", "10 місяців", "10 місяців", "STAFF", "STAFF", "STAFF"];
+
+    const depts = {
+        "УПП": {
+            icon: "fa-car-on",
+            title: "Управління патрульної поліції",
+            desc: "🟢 БАЗОВИЙ ЕТАП. Усі співробітники починають тут, щоб довести свою компетентність та знання законів міста Херсон.",
+            funcs: ["Охорона громадського порядку", "Контроль дорожнього руху", "Реагування на виклики 102"],
+            rights: ["Зупинка автомобілів", "Виписка штрафів", "Первинне затримання"],
+            special: "Патрульні мають право на застосування спецзасобів при переслідуванні порушників.",
+            start: 1,
+            requirements: {
+                1: "Пройти Академію, отримати ролі в спецзв'язку, скласти базовий іспит на знання законів.",
+                2: "6 патрулювань (фіксація початку, середини, кінця), перевірка документів у 10 громадян, успішне складання іспиту на знання районів Херсона.",
+                3: "8 патрулювань, 4 затримання, виписка 3 штрафів за порушення ПДР, чергування на посту (КПП) — 30 хвилин.",
+                4: "10 патрулів, 5 затримань, реагування на 4 виклики «102».",
+                5: "Іспит Офіцерської школи. 12 патрулів, 7 затримань.",
+                6: "15 патрулів, проведення 2 тренувань для Курсантів.",
+                7: "20 патрулів, кураторство над 2 новачками, прийняття 3 іспитів."
             }
-        };
-
-        const ranksList = [
-            "Курсант", "Рядовий", "Капрал", "Сержант", "Старший сержант",
-            "Молодший лейтенант", "Лейтенант", "Старший лейтенант", "Капітан",
-            "Майор", "Підполковник", "Полковник", "Генерал 3-го рангу", "Генерал 2-го рангу", "Генерал 1-го рангу"
-        ];
-
-        const timeLimits = ["0", "0", "1 міс.", "1.5 міс.", "1.5 міс.", "3 міс.", "4 міс.", "6 міс.", "8 міс.", "8 міс.", "10 міс.", "STAFF", "STAFF", "STAFF", "STAFF"];
-
-        const mainContent = document.getElementById('main-content');
-        const navContainer = document.getElementById('sidebar-nav');
-
-        function init() {
-            for (let id in departments) {
-                const div = document.createElement('div');
-                div.className = 'nav-item';
-                div.innerHTML = `<i class="fa-solid ${departments[id].icon}"></i> <span>${id.toUpperCase()}</span>`;
-                div.onclick = () => showDept(id, div);
-                navContainer.appendChild(div);
+        },
+        "ДВБ": {
+            icon: "fa-user-shield",
+            title: "Департамент внутрішньої безпеки",
+            desc: "🛡️ Елітний підрозділ. Контроль законності дій співробітників та виявлення корупційних схем всередині НПУ.",
+            funcs: ["Антикорупційні заходи", "Службові перевірки", "Контроль дисципліни"],
+            rights: ["Допит співробітників", "Перегляд звітів", "Інкогніто-рейди"],
+            special: "Дозволено проведення прихованого спостереження за складом поліції.",
+            start: 4,
+            requirements: {
+                4: "Допомога у 2 службових перевірках, фіксація 2 порушень статуту від інших поліцейських.",
+                5: "Іспит Офіцерської школи. 3 інкогніто-рейди, проведення 1 допиту співробітника (з наглядом).",
+                6: "4 самостійні службові розслідування, проведення 1 лекції для складу про корупцію.",
+                7: "Відкриття 2 справ на старший склад, документальний супровід 3 звільнень або видачі доган."
             }
-            showHome();
+        },
+        "ДСР": {
+            icon: "fa-briefcase-filter",
+            title: "Департамент стратегічних розслідувань",
+            desc: "🕵️ Боротьба з організованою злочинністю (ОЗУ) та кримінальними авторитетами.",
+            funcs: ["Стеження за бандитськими угрупованнями", "Збір досьє", "Контрольні закупівлі"],
+            rights: ["Робота під прикриттям", "Обшуки з ордером", "Вилучення контрабанди"],
+            special: "Оперативники ДСР можуть використовувати цивільний транспорт для роботи.",
+            start: 4,
+            requirements: {
+                4: "2 контрольні закупівлі, збір інформації (стеження) на 1 члена ОЗУ.",
+                5: "Іспит Офіцерської школи. 2 обшуки (з ордером від ГСУ), 1 успішне впровадження «під прикриттям».",
+                6: "4 затримання торговців зброєю/наркотиками, ведення 1 повноцінного досьє на кримінального авторитета.",
+                7: "Розкриття цілого угруповання (доведене до ГСУ), 5 затримань членів ОЗУ."
+            }
+        },
+        "ГСУ": {
+            icon: "fa-scale-unbalanced",
+            title: "Головне слідче управління",
+            desc: "⚖️ Процесуальне керівництво та ведення кримінальних справ від початку до суду.",
+            funcs: ["Допити підозрюваних", "Збір речових доказів", "Виписка повісток"],
+            rights: ["Видача ордерів", "Керування слідчими діями", "Передача справ до суду"],
+            special: "Тільки ГСУ має повноваження готувати офіційні обвинувальні акти для адміністрації.",
+            start: 4,
+            requirements: {
+                4: "Допомога слідчому у 2 справах, виїзд на 3 місця злочину для збору доказів.",
+                5: "Іспит Офіцерської школи. Самостійне ведення 1 кримінальної справи (допит, збір доказів).",
+                6: "Ведення 3 кримінальних справ, виписка 5 повісток, передача 2 справ до суду.",
+                7: "Розслідування 2 особливо тяжких злочинів (вбивство/викрадення), координація дій ДСР або КОРД на місці."
+            }
+        },
+        "КОРД": {
+            icon: "fa-gun",
+            title: "Корпус оперативно-раптової дії",
+            desc: "🦅 Спецназ поліції. Силове вирішення найскладніших ситуацій: затримання озброєних груп та звільнення заручників.",
+            funcs: ["Штурмові операції", "Захист свідків", "Антитерористична діяльність"],
+            rights: ["Важке озброєння", "Броньована техніка", "Першочерговий штурм"],
+            special: "Бійці КОРД проходять найважчий відбір та фізичну підготовку.",
+            start: 4,
+            requirements: {
+                4: "Жорстка здача фізичних нормативів, участь у 3 тренувальних штурмах.",
+                5: "Іспит Офіцерської школи (тактика). Участь у 2 реальних спецопераціях (заручники/штурм будівлі).",
+                6: "Силова підтримка ДСР/ГСУ на 4 виїздах, проведення 1 тактичного тренування для УПП.",
+                7: "Керування штурмовою групою у 3 операціях, 5 силових затримань озброєних осіб."
+            }
+        },
+        "ПОП": {
+            icon: "fa-shield-cat",
+            title: "Поліція особливого призначення",
+            desc: "🏟️ Охорона громадського порядку під час масових заходів та патрулювання небезпечних зон.",
+            funcs: ["Розгін незаконних мітингів", "Контроль периметру", "Охорона VIP"],
+            rights: ["Використання щитів", "Блокування доріг", "Масові перевірки"],
+            special: "Забезпечують безпеку мерії та суду під час засідань.",
+            start: 4,
+            requirements: {
+                4: "Охорона 2 масових заходів, патруль «небезпечного» району (4 рази у складі групи).",
+                5: "Іспит Офіцерської школи. Створення периметра на 3 РП-ситуаціях, 5 затримань хуліганів.",
+                6: "Координація охорони 3 заходів (мерія, суд тощо), придушення 1 заворушення.",
+                7: "Керування групою ПОП (від 3 осіб) на 5 РП-ситуаціях, проведення 2 тренувань."
+            }
+        },
+        "ПО": {
+            icon: "fa-house-lock",
+            title: "Поліція охорони",
+            desc: "🏠 Охорона стратегічних об'єктів та приватних бізнесів на договірній основі.",
+            funcs: ["Супровід інкасації", "Охорона банків", "Тривожні виклики"],
+            rights: ["Силовий захист об'єктів", "Перевірка пропусків", "Затримання на об'єкті"],
+            special: "Єдиний підрозділ, що офіційно співпрацює з бізнесом міста.",
+            start: 4,
+            requirements: {
+                4: "Охорона банку/мерії (сумарно 2 години), 2 супроводи інкасації.",
+                5: "Іспит Офіцерської школи. Охорона VIP-особи (1 година), реагування на 3 виклики з «тривожної кнопки».",
+                6: "Відбиття нападу на об'єкт (або РП-тренування), 5 супроводів важливого вантажу.",
+                7: "Організація охоронних заходів (3 рази), укладання 2 РП-договорів на охорону з бізнесами."
+            }
         }
+    };
 
-        function showHome() {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelector('.nav-item').classList.add('active');
-            
-            mainContent.innerHTML = `
-                <div class="welcome-screen">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/National_Police_of_Ukraine_emblem.svg" width="150" style="margin-bottom:20px;">
-                    <h1>ГУНП у Херсонській області</h1>
-                    <p>Вітаємо на офіційному порталі Національної поліції. Тут ви знайдете всю необхідну інформацію про структуру підрозділів, систему кар'єрного росту та вимоги до офіцерського складу.</p>
-                    <div class="dept-info-grid">
-                        <div class="info-box">
-                            <h3><i class="fa-solid fa-building-columns"></i> Про структуру</h3>
-                            <p>Поліція Херсона поділена на 8 профільних департаментів. Кожен виконує свою унікальну роль: від щоденного патрулювання до складних антитерористичних операцій.</p>
-                        </div>
-                        <div class="info-box">
-                            <h3><i class="fa-solid fa-star"></i> Кар'єра</h3>
-                            <p>Ми використовуємо систему RPG-прогресії. Чим вище ваше звання, тим більше відповідальності та складніші завдання чекають на вас. Почніть свій шлях сьогодні.</p>
-                        </div>
+    function renderHome() {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelector('.nav-link').classList.add('active');
+        const view = document.getElementById('app-view');
+        view.innerHTML = `
+            <div class="hero-section">
+                <h1>ГУНП Херсонської області</h1>
+                <p>Вас вітає офіційний інформаційний ресурс поліції міста Херсон. Тут ви знайдете вимоги до служби, структуру підрозділів та систему кар'єрного росту від курсанта до генерала.</p>
+            </div>
+            <div class="info-grid">
+                <div class="widget">
+                    <h3><i class="fa-solid fa-sitemap"></i> Наша структура</h3>
+                    <p style="font-size: 1.15rem; color: #94a3b8;">Поліція Херсона розділена на 7 спеціалізованих департаментів. Кожен гравець починає з УПП і з 4-го рангу обирає свій професійний шлях.</p>
+                </div>
+                <div class="widget">
+                    <h3><i class="fa-solid fa-star"></i> Кар'єрна драбина</h3>
+                    <p style="font-size: 1.15rem; color: #94a3b8;">Ми цінуємо досвід. Чим вище ваше звання, тим складніші завдання та вища відповідальність перед особовим складом.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderDept(key, element) {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        element.classList.add('active');
+        const d = depts[key];
+        const view = document.getElementById('app-view');
+        
+        let ladderHtml = "";
+        
+        for (let i = d.start - 1; i < 15; i++) {
+            const rankNum = i + 1;
+            let reqText = "";
+
+            if (rankNum <= 8) {
+                reqText = d.requirements[rankNum] || "Виконання профільних завдань департаменту.";
+            } else if (rankNum === 9) {
+                reqText = "Наявність вільної посади Заступника начальника відділу. Вислуга та звіт.";
+            } else if (rankNum === 10) {
+                reqText = "Наявність вільної посади Начальника відділу. Довіра Генерала.";
+            } else if (rankNum >= 11 && rankNum <= 12) {
+                reqText = "Робота виключно з особовим складом та фракційними системами. Адміністрування.";
+            } else {
+                reqText = "Строки вислуги не встановлюються. Призначаються STAFF-командою.";
+            }
+
+            ladderHtml += `
+                <div class="rank-item">
+                    <div class="rank-id">${rankNum}</div>
+                    <div class="rank-content">
+                        <h4>${rankNames[i]}</h4>
+                        <p>${reqText}</p>
                     </div>
+                    <div class="rank-time">${rankTimes[i]}</div>
                 </div>
             `;
         }
 
-        function showDept(id, el) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-
-            const d = departments[id];
-            let ranksHtml = "";
-
-            for (let i = d.startRank - 1; i < 15; i++) {
-                let task = d.customTasks && d.customTasks[i+1] 
-                    ? d.customTasks[i+1] 
-                    : `Виконання профільних завдань ${d.name} (РП-відігровки, звіти, патрулі відповідно до спеціалізації).`;
-                
-                if (i >= 11) task = "Призначається виключно за рішенням Генерала ГУНП або Кураторів.";
-
-                ranksHtml += `
-                    <div class="rank-card">
-                        <div class="rank-id">${i + 1}</div>
-                        <div class="rank-details">
-                            <h4>${ranksList[i]}</h4>
-                            <p>${task}</p>
-                        </div>
-                        <div class="rank-time">${timeLimits[i]}</div>
-                    </div>
-                `;
-            }
-
-            mainContent.innerHTML = `
-                <div class="welcome-screen" style="text-align:left; padding-top:0;">
-                    <h1>${d.fullName}</h1>
-                    <p>${d.desc}</p>
-                    
-                    <div class="dept-info-grid">
-                        <div class="info-box">
-                            <h3><i class="fa-solid fa-list-check"></i> Функції</h3>
-                            <ul>${d.functions.map(f => `<li>${f}</li>`).join('')}</ul>
-                        </div>
-                        <div class="info-box">
-                            <h3><i class="fa-solid fa-gavel"></i> Права</h3>
-                            <ul>${d.rights.map(r => `<li>${r}</li>`).join('')}</ul>
-                        </div>
-                    </div>
-                    
-                    <div class="info-box" style="margin-top:20px; border-left: 4px solid var(--gold);">
-                        <h3 style="color:var(--gold)"><i class="fa-solid fa-circle-info"></i> Особливість</h3>
-                        <p>${d.special}</p>
-                    </div>
-
-                    <div class="ranks-section">
-                        <h2 style="margin-bottom:25px; border-bottom: 2px solid var(--border); padding-bottom:10px;">Сходи звань та вимоги</h2>
-                        ${ranksHtml}
-                    </div>
+        view.innerHTML = `
+            <div class="hero-section">
+                <h1>${d.title}</h1>
+                <p>${d.desc}</p>
+            </div>
+            <div class="info-grid">
+                <div class="widget">
+                    <h3><i class="fa-solid fa-list-check"></i> Основні функції</h3>
+                    <ul>${d.funcs.map(f => `<li>${f}</li>`).join('')}</ul>
                 </div>
-            `;
-        }
+                <div class="widget">
+                    <h3><i class="fa-solid fa-handcuffs"></i> Повноваження</h3>
+                    <ul>${d.rights.map(r => `<li>${r}</li>`).join('')}</ul>
+                </div>
+            </div>
+            <div class="banner-alert">
+                <h4>Унікальна особливість</h4>
+                <p>${d.special}</p>
+            </div>
+            <h2 style="margin-bottom: 25px; font-weight: 800; font-size: 1.8rem;">Сходи звань та вимоги підвищення</h2>
+            <div class="ladder-container">${ladderHtml}</div>
+        `;
+    }
 
-        init();
-    </script>
+    const navMenu = document.getElementById('menu-items');
+    Object.keys(depts).forEach(key => {
+        const item = document.createElement('div');
+        item.className = 'nav-link';
+        item.innerHTML = `<i class="fa-solid ${depts[key].icon}"></i> <span>${key}</span>`;
+        item.onclick = () => renderDept(key, item);
+        navMenu.appendChild(item);
+    });
+
+    renderHome();
+</script>
 </body>
 </html>
