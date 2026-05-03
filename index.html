@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГУНП у Херсонській області | Веб-портал</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --surface: #131a2e;
+            --accent: #1e88e5;
+            --gold: #ffc107;
+            --text: #e0e0e0;
+            --border: rgba(255,255,255,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: var(--text); line-height: 1.6; }
+
+        header {
+            background: var(--surface);
+            padding: 20px 5%;
+            border-bottom: 3px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-area img { height: 60px; }
+        
+        nav { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin: 20px 5%; 
+            justify-content: center; 
+        }
+        .nav-link {
+            padding: 10px 15px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .nav-link:hover, .nav-link.active { 
+            background: var(--accent); 
+            border-color: var(--accent); 
+            transform: translateY(-2px);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        .dept-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(30,136,229,0.1) 0%, transparent 100%);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .rank-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .rank-card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            transition: 0.3s;
+            position: relative;
+        }
+        .rank-card:hover { border-left-color: var(--gold); background: #1a2440; }
+        .rank-card h3 { color: var(--gold); margin-bottom: 10px; font-size: 1.1rem; }
+        .rank-card .time { 
+            font-size: 0.75rem; 
+            color: var(--accent); 
+            font-weight: bold; 
+            display: block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .rank-card p { font-size: 0.9rem; color: #ccc; }
+
+        footer {
+            margin-top: 60px;
+            padding: 40px;
+            background: #05070a;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        .copy { font-size: 0.8rem; color: #555; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Logo_of_the_National_Police_of_Ukraine.png" alt="НПУ">
+        <div>
+            <h1>ГУНП у Херсонській області</h1>
+            <p style="font-size: 0.7rem; color: var(--accent);">Служити та захищати</p>
+        </div>
+    </div>
+</header>
+
+<nav id="dept-nav"></nav>
+
+<div class="container">
+    <div id="dept-content"></div>
+</div>
+
+<footer>
+    <div class="copy">Усі права захищені. Авторське право належить <strong>XDEVS</strong>.</div>
+</footer>
+
+<script>
+
+const timeLimits = {
+    "Капрал": "1 місяць",
+    "Сержант": "1.5 місяці",
+    "Старший сержант": "1.5 місяці",
+    "Молодший лейтенант": "3 місяці",
+    "Лейтенант": "4 місяці",
+    "Старший лейтенант": "6 місяців",
+    "Капітан": "8 місяців",
+    "Майор": "8 місяців",
+    "Підполковник": "10 місяців",
+    "DEFAULT": "Не встановлено"
+};
+
+const baseRanks = [
+    "Курсант", "Рядовий", "Капрал", "Сержант", "Старший сержант",
+    "Молодший лейтенант", "Лейтенант", "Старший лейтенант", "Капітан",
+    "Майор", "Підполковник", "Полковник", "Генерал 3-го рангу",
+    "Генерал 2-го рангу", "Генерал 1-го рангу"
+];
+
+const departments = {
+    "УПП": { icon: "fa-car", desc: "Патрульна поліція: забезпечення порядку на дорогах та вулицях." },
+    "ДВБ": { icon: "fa-shield-halved", desc: "Внутрішня безпека: запобігання корупції та правопорушенням у поліції." },
+    "ДСР": { icon: "fa-magnifying-glass-chart", desc: "Стратегічні розслідування: боротьба з організованою злочинністю." },
+    "СУ": { icon: "fa-scale-balanced", desc: "Слідче управління: розслідування кримінальних правопорушень у Херсоні." },
+    "КОРД": { icon: "fa-person-rifle", desc: "Корпус оперативно-раптової дії: Спецпідрозділ для штурмових операцій та боротьби з тероризмом." },
+    "КП": { icon: "fa-user-secret", desc: "Кримінальна поліція: оперативна робота та розкриття злочинів." },
+    "ППОП": { icon: "fa-handcuffs", desc: "Поліція особливого призначення: охорона громадського порядку на заходах." },
+    "ПО": { icon: "fa-building-shield", desc: "Поліція охорони: захист об'єктів та інкасація." }
+};
+
+const nav = document.getElementById('dept-nav');
+const content = document.getElementById('dept-content');
+
+function render(key) {
+    const dept = departments[key];
+    
+    document.querySelectorAll('.nav-link').forEach(l => {
+        l.classList.toggle('active', l.innerText === key);
+    });
+
+    content.innerHTML = `
+        <div class="dept-header">
+            <i class="fas ${dept.icon} fa-4x" style="color:var(--accent); margin-bottom:15px;"></i>
+            <h2>${key} — ${dept.desc}</h2>
+        </div>
+        <div class="rank-grid">
+            ${baseRanks.map((rankName, index) => {
+                let task = "Виконання службових обов'язків згідно зі статутом підрозділу.";
+                if (index === 0) task = "Проходження базової підготовки та складання іспитів.";
+                if (index > 10) task = "Призначається за рішенням керівництва ГУНП та STAFF.";
+
+                return `
+                    <div class="rank-card">
+                        <span class="time">Вислуга: ${timeLimits[rankName] || timeLimits.DEFAULT}</span>
+                        <h3>${rankName}</h3>
+                        <p>${task}</p>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+Object.keys(departments).forEach((key, index) => {
+    const btn = document.createElement('div');
+    btn.className = 'nav-link' + (index === 0 ? ' active' : '');
+    btn.innerText = key;
+    btn.onclick = () => render(key);
+    nav.appendChild(btn);
+});
+
+render("УПП");
+</script>
+</body>
+</html>
